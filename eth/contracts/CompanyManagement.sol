@@ -12,13 +12,9 @@ contract CompanyManagement is AccessControlEnumerable {
      */
 
     constructor() {
-        owner = msg.sender;
-
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(UPDATE_ROLE, _msgSender());
     }
-
-    address owner;
 
     enum status {
         A,
