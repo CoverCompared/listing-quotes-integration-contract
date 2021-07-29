@@ -12,9 +12,13 @@ contract CompanyManagement is AccessControlEnumerable {
      */
 
     constructor() {
+        owner = msg.sender;
+
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(UPDATE_ROLE, _msgSender());
     }
+
+    address owner;
 
     enum status {
         A,
@@ -35,6 +39,16 @@ contract CompanyManagement is AccessControlEnumerable {
 
     mapping(address => Company) companies;
     address[] public addresses;
+
+    /**
+     * New company has been added
+     */
+    event newCompany(address company, bytes32 name);
+
+    /**
+     * Company status has been updated
+     */
+    event statusChanged(address company, bytes32 name, status newStatus);
 
     /**
      * @dev Add company
@@ -60,6 +74,8 @@ contract CompanyManagement is AccessControlEnumerable {
         company.apiQuoteListing = apiQuote;
 
         addresses.push(_address);
+
+        emit newCompany(_address, name);
     }
 
     function getIdxLength() public view returns (uint256) {
@@ -84,6 +100,7 @@ contract CompanyManagement is AccessControlEnumerable {
         require(hasRole(UPDATE_ROLE, _msgSender()));
         Company storage company = companies[_address];
         company.Status = _status;
+
+        emit statusChanged(_address, company.name, _status);
     }
 }
-
